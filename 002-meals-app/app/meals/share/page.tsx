@@ -1,5 +1,6 @@
 import ImagePicker from "@/components/image-picker/image-picker";
 import styles from "./page.module.css";
+import { submitForm } from "@/lib/actions";
 
 export default function ShareMealPage() {
   return (
@@ -11,7 +12,7 @@ export default function ShareMealPage() {
         <p>Or any other meal you feel needs sharing!</p>
       </header>
       <main className={styles.main}>
-        <form className={styles.form}>
+        <form className={styles.form} action={submitForm}>
           <div className={styles.row}>
             <p>
               <label htmlFor="name">Your name</label>

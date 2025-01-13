@@ -12,3 +12,7 @@ export async function getMeals() {
 export async function getMeal(slug) {
   return db.prepare("select * from meals where slug = ?").get(slug);
 }
+
+export async function saveMeal(meal){
+  
+}
