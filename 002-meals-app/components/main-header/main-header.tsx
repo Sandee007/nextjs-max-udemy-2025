@@ -12,8 +12,7 @@ export default function MainHeader() {
       <header className={styles.header}>
         <Link className={styles.logo} href="/">
           {/* *** in Nextjs, imported images are an object */}
-          {/* ! must have src */}
-          <Image src={logoImg.src} alt="Logo" width={logoImg?.width} height={logoImg.height} priority />
+          <Image src={logoImg} alt="Logo" priority />
           NextLevel Food
         </Link>
 
