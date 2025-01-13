@@ -7,7 +7,10 @@ function isInvalidText(text: string) {
   return !text || text?.trim() === "";
 }
 
-export async function submitForm(formData: FormData) {
+interface ResSubmitForm {
+  message: string | null;
+}
+export async function submitForm(prevState: ResSubmitForm, formData: FormData): ResSubmitForm {
   const meal = {
     title: formData.get("title") as string,
     summary: formData.get("summary") as string,
@@ -27,7 +30,9 @@ export async function submitForm(formData: FormData) {
     !meal?.image ||
     meal?.image?.size === 0
   ) {
-    throw new Error("Invalid input");
+    return {
+      message: "Invalid input.",
+    };
   }
   await saveMeal(meal);
   redirect("/meals");
