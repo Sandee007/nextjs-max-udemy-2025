@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { saveMeal } from "./meals";
+import { revalidatePath } from "next/cache";
 
 function isInvalidText(text: string) {
   return !text || text?.trim() === "";
@@ -10,7 +11,7 @@ function isInvalidText(text: string) {
 interface ResSubmitForm {
   message: string | null;
 }
-export async function submitForm(prevState: ResSubmitForm, formData: FormData): ResSubmitForm {
+export async function submitForm(prevState: ResSubmitForm, formData: FormData): Promise<ResSubmitForm> {
   const meal = {
     title: formData.get("title") as string,
     summary: formData.get("summary") as string,
@@ -35,5 +36,7 @@ export async function submitForm(prevState: ResSubmitForm, formData: FormData): 
     };
   }
   await saveMeal(meal);
+  revalidatePath("/meals"); // * tell nextjs to remove it's cache for the given path - accepts 'layout' | 'page' as a 2nd argument, page is the default
+  // revalidatePath('/', 'layout') // ! revalidate the entire application
   redirect("/meals");
 }
