@@ -1,5 +1,7 @@
+"use client";
+
 import { DUMMY_NEWS } from "@/dummy-news";
-import { notFound } from "next/navigation";
+import { notFound, useRouter } from "next/navigation";
 import React from "react";
 
 interface Props {
@@ -7,14 +9,15 @@ interface Props {
 }
 
 export default function InterceptedImagePage({ params }: Props) {
-  const { slug } = React.use(params);
+  const router = useRouter();
 
+  const { slug } = React.use(params);
   const news = DUMMY_NEWS.find((i) => i?.slug === slug);
   if (!news) return notFound();
 
   return (
     <>
-      <div className="modal-backdrop" />
+      <div className="modal-backdrop" onClick={router.back} />
       <dialog className="modal" open>
         <div className="fullscreen-image">
           <img src={`/images/news/${news?.image}`} alt={news?.title} />

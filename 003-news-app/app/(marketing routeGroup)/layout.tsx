@@ -1,5 +1,4 @@
 import React from "react";
-import "@/app/globals.css";
 
 export const metadata = {
   title: "Next.js Page Routing & Rendering",
@@ -7,9 +6,5 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="en">
-      <body>{children}</body>
-    </html>
-  );
+  return <main>{children}</main>;
 }
