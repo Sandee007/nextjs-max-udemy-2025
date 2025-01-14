@@ -40,6 +40,13 @@ export default function FilteredNewsPage({ params }: Props) {
     newsContent = <NewsList newsList={newsList} />;
   }
 
+  if (
+    // ! min the +operator, converts to numbers
+    (selectedYear && !(getAvailableNewsYears() as Array<number>)?.includes(+selectedYear)) ||
+    (selectedMonth && !(getAvailableNewsMonths(selectedYear) as Array<number>)?.includes(+selectedMonth))
+  ) {
+    throw new Error("Invalid filter.");
+  }
   return (
     <>
       <header id="archive-header">
