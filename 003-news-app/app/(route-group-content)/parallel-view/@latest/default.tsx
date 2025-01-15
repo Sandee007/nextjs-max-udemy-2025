@@ -3,11 +3,11 @@
 import NewsList from "@/components/news-list/news-list";
 import { getLatestNews } from "@/lib/news";
 
-export default function LatestNewsPage() {
+export default async function LatestNewsPage() {
   return (
     <>
       <h2>Latest News</h2>
-      <NewsList newsList={getLatestNews()} />
+      <NewsList newsList={await getLatestNews()} />
     </>
   );
 }

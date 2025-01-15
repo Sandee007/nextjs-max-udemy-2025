@@ -15,23 +15,23 @@ interface Props {
   params: Promise<{ filter: string }>;
 }
 
-export default function FilteredNewsPage({ params }: Props) {
+export default async function FilteredNewsPage({ params }: Props) {
   // ! filter comes in as an array because it's a catch all route
-  const { filter } = React.use(params);
+  const { filter } = await params;
 
   const selectedYear = filter?.[0];
   const selectedMonth = filter?.[1];
 
   let newsList: Array<News> = [];
-  let links = getAvailableNewsYears();
+  let links = await getAvailableNewsYears();
 
   if (selectedYear && !selectedMonth) {
-    newsList = getNewsForYear(selectedYear);
+    newsList = await getNewsForYear(selectedYear);
     links = getAvailableNewsMonths(selectedYear);
   }
 
   if (selectedYear && selectedMonth) {
-    newsList = getNewsForYearAndMonth(selectedYear, selectedMonth);
+    newsList = await getNewsForYearAndMonth(selectedYear, selectedMonth);
     links = [];
   }
 
@@ -40,10 +40,10 @@ export default function FilteredNewsPage({ params }: Props) {
     newsContent = <NewsList newsList={newsList} />;
   }
 
+  const availlableYears = await getAvailableNewsYears();
   if (
-    // ! min the +operator, converts to numbers
-    (selectedYear && !(getAvailableNewsYears() as Array<number>)?.includes(+selectedYear)) ||
-    (selectedMonth && !(getAvailableNewsMonths(selectedYear) as Array<number>)?.includes(+selectedMonth))
+    (selectedYear && !availlableYears?.includes(selectedYear)) ||
+    (selectedMonth && !getAvailableNewsMonths(selectedYear)?.includes(selectedMonth))
   ) {
     throw new Error("Invalid filter.");
   }
