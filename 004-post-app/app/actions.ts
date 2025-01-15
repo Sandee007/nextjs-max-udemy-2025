@@ -1,8 +1,9 @@
 "use server";
 
-import { storePost } from "@/lib/posts";
+import { storePost, updatePostLikeStatus } from "@/lib/posts";
 import { redirect } from "next/navigation";
 import { uploadImage } from "@/lib/cloudinary";
+import { revalidatePath } from "next/cache";
 
 export interface FormResponse_createPost {
   errors: Array<string>;
@@ -44,5 +45,10 @@ export async function createPost(
     throw new Error(error as string);
   }
 
-  redirect("/");
+  redirect("/feed");
+}
+
+export async function togglePostLikeStatus(id: string) {
+  await updatePostLikeStatus(id, 2);
+  revalidatePath('/')
 }
