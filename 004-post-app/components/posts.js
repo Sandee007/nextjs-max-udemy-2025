@@ -1,8 +1,11 @@
+"use client";
+
 import { formatDate } from "@/lib/format";
 import LikeButton from "./like-icon";
 import { togglePostLikeStatus } from "@/app/actions.ts";
+import { useOptimistic } from "react";
 
-function Post({ post }) {
+function Post({ post, toggleLike }) {
   return (
     <article className="post">
       <div className="post-image">
@@ -17,7 +20,7 @@ function Post({ post }) {
             </p>
           </div>
           <div>
-            <form action={togglePostLikeStatus.bind(this, post?.id)} className={post?.isLiked ? "liked" : undefined}>
+            <form action={toggleLike.bind(this, post?.id)} className={post?.isLiked ? "liked" : undefined}>
               <LikeButton />
             </form>
           </div>
@@ -29,15 +32,36 @@ function Post({ post }) {
 }
 
 export default function Posts({ posts }) {
-  if (!posts || posts.length === 0) {
+  const [optimisticallyUpdatedPosts, optimisticallyUpdatePostsFN] = useOptimistic(posts, (prevPosts, updatedPostId) => {
+    const updatedPostIndex = prevPosts.findIndex((i) => i.id === updatedPostId);
+
+    if (updatedPostIndex === -1) return prevPosts;
+
+    // * update the post in anm imutable way
+    const updatedPost = { ...prevPosts[updatedPostIndex] };
+    updatedPost.likes = updatedPost.likes + (updatedPost?.isLiked ? -1 : 1);
+    updatedPost.isLiked = !updatedPost.isLiked;
+
+    const newsPosts = [...prevPosts];
+    newsPosts[updatedPostIndex] = updatedPost;
+
+    return newsPosts;
+  });
+
+  if (!optimisticallyUpdatedPosts || optimisticallyUpdatedPosts.length === 0) {
     return <p>There are no posts yet. Maybe start sharing some?</p>;
+  }
+
+  async function updatePost(id) {
+    optimisticallyUpdatePostsFN(id);
+    await togglePostLikeStatus(id);
   }
 
   return (
     <ul className="posts">
-      {posts.map((post) => (
+      {optimisticallyUpdatedPosts.map((post) => (
         <li key={post.id}>
-          <Post post={post} />
+          <Post post={post} toggleLike={updatePost} />
         </li>
       ))}
     </ul>
