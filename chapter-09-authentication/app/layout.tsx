@@ -1,3 +1,4 @@
+import { PropsWithChildren } from 'react';
 import './globals.css';
 
 export const metadata = {
@@ -5,7 +6,7 @@ export const metadata = {
   description: 'Next.js Authentication',
 };
 
-export default function RootLayout({ children }) {
+export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang="en">
       <body>{children}</body>
